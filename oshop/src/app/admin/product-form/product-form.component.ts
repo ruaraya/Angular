@@ -14,7 +14,7 @@ import { logging } from 'protractor';
 })
 export class ProductFormComponent implements OnInit {
   categories$;
-  product = {};
+  product = { title: '', price: '', imageUrl: '', category: '' };
   id;
 
   constructor(
