@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import 'rxjs/add/operator/take';
 import { AppProduct } from './../../models/app-product';
 import { Observable } from 'rxjs/Observable';
+import { logging } from 'protractor';
 
 @Component({
   selector: 'app-product-form',
@@ -13,7 +14,8 @@ import { Observable } from 'rxjs/Observable';
 })
 export class ProductFormComponent implements OnInit {
   categories$;
-  product: any;
+  product = {};
+  id;
 
   constructor(
     private router: Router,
@@ -25,25 +27,29 @@ export class ProductFormComponent implements OnInit {
   }
 
   save(product) {
-    this.productService.create(product);
+    if (this.id) this.productService.update(this.id, product);
+    else this.productService.create(product);
+
+    this.router.navigate(['/admin/products']);
+  }
+
+  delete() {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+
+    this.productService.delete(this.id);
     this.router.navigate(['/admin/products']);
   }
 
   ngOnInit(): void {
-    let id = this.route.snapshot.paramMap.get('id');
+    this.id = this.route.snapshot.paramMap.get('id');
 
-    if (id)
+    if (this.id)
       this.productService
-        .get(id)
+        .get(this.id)
         .valueChanges()
         .take(1)
-        .map((res) => ({
-          category: res[0],
-          imageUrl: res[1],
-          price: res[2],
-          title: res[3],
-        }))
         .subscribe((data) => {
+          console.log(data);
           this.product = data;
         });
   }

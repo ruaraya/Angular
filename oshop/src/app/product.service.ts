@@ -28,6 +28,13 @@ export class ProductService {
 
   get(productId): AngularFireObject<AppProduct> {
     return this.db.object('/products/' + productId);
-    //return this.db.list('/products');
+  }
+
+  update(productId, product) {
+    return this.db.object('/products/' + productId).update(product);
+  }
+
+  delete(productId) {
+    return this.db.object('/products/' + productId).remove();
   }
 }
